@@ -3,9 +3,19 @@
 class BlabbrApi::Api < Grape::API
   version 'v1', format: :json
 
+  helpers do
+    def current_user
+      env['current_user']
+    end
+  end
+
   resource :topics do
     get do
-      []
+      BlabbrCore::TopicsCollection.new(current_user).all.to_a
+    end
+
+    get ':limace' do
+      BlabbrCore::Topic.new(current_user, params[:limace]).find
     end
   end
 end

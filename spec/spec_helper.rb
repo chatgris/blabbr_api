@@ -3,6 +3,9 @@
 path = File.expand_path(File.dirname(__FILE__) + '/../lib/')
 $LOAD_PATH.unshift(path) unless $LOAD_PATH.include?(path)
 
+require 'bundler'
+Bundler.setup :default, :test
+
 require 'blabbr_api'
 require 'rack/test'
 
