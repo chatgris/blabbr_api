@@ -9,6 +9,10 @@ class BlabbrApi::Api < Grape::API
     end
   end
 
+  get '/me' do
+    current_user
+  end
+
   resource :users do
     get do
       BlabbrCore::UsersCollection.new(current_user).all.to_a

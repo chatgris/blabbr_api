@@ -27,6 +27,12 @@ describe BlabbrApi::Api, type: :requests do
       last_response.status.should eq 200
       JSON.parse(last_response.body)['nickname'].should eq current_user.nickname
     end
+
+    it 'finds current_user' do
+      get "/v1/me", {}, {'current_user' => current_user}
+      last_response.status.should eq 200
+      JSON.parse(last_response.body)['nickname'].should eq current_user.nickname
+    end
   end
 
   describe "GET /v1/topics" do
