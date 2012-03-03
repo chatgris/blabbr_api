@@ -3,7 +3,7 @@ require 'spec_helper'
 
 describe BlabbrApi::Api, type: :requests do
   let!(:current_user) {
-    BlabbrCore::Persistence::User.new(nickname: 'nickname', email: 'email@email.com')
+    BlabbrCore::Persistence::User.create(nickname: 'nickname', email: 'email@email.com')
   }
   let(:member) {
     BlabbrCore::Persistence::User.new(nickname: 'member', email: 'member@email.com')
@@ -14,6 +14,14 @@ describe BlabbrApi::Api, type: :requests do
   let(:topic_by_member) {
     BlabbrCore::Persistence::Topic.create(author: member, title: "Title please !")
   }
+
+  describe "GET /v1/users" do
+    it 'returns a list of users' do
+      get "/v1/users", {}, {'current_user' => current_user}
+      last_response.status.should == 200
+      JSON.parse(last_response.body).first['nickname'].should == current_user.nickname
+    end
+  end
 
   describe "GET /v1/topics" do
     context 'without topics' do

@@ -9,6 +9,12 @@ class BlabbrApi::Api < Grape::API
     end
   end
 
+  resource :users do
+    get do
+      BlabbrCore::UsersCollection.new(current_user).all.to_a
+    end
+  end
+
   resource :topics do
     get do
       BlabbrCore::TopicsCollection.new(current_user).all.to_a
