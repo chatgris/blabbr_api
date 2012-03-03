@@ -28,6 +28,16 @@ class BlabbrApi::Api < Grape::API
       BlabbrCore::UsersCollection.new(current_user).all.to_a
     end
 
+    post do
+      # TODO: expose errors in a cleaner way
+      user = BlabbrCore::User.new(current_user)
+      if user.create(params[:user])
+        user.send(:resource_for_creation)
+      else
+        error! user.send(:resource_for_creation).errors.as_json, 412
+      end
+    end
+
     get ':limace' do
       BlabbrCore::User.new(current_user, params[:limace]).find
     end

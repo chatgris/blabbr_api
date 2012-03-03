@@ -5,6 +5,9 @@ describe BlabbrApi::Api, type: :requests do
   let!(:current_user) {
     BlabbrCore::Persistence::User.create(nickname: 'nickname', email: 'email@email.com')
   }
+  let(:admin) {
+    BlabbrCore::Persistence::User.create(nickname: 'nickname', email: 'email@email.com', roles: [:admin])
+  }
   let(:member) {
     BlabbrCore::Persistence::User.new(nickname: 'member', email: 'member@email.com')
   }
@@ -51,6 +54,24 @@ describe BlabbrApi::Api, type: :requests do
     context 'with invalid params' do
       it 'updates current_user' do
         put "/v1/me", {user: {nickname: 'a'}}, {'current_user' => current_user}
+        last_response.status.should eq 412
+        JSON.parse(last_response.body).keys.should include 'nickname'
+      end
+    end
+  end
+
+  describe 'POST /v1/users' do
+    context 'with valid params' do
+      it 'return a user' do
+        post "/v1/users", {user: {nickname: 'A new user', email: 'test@mail.com'}}, {'current_user' => admin}
+        last_response.status.should eq 201
+        JSON.parse(last_response.body)['nickname'].should eq 'A new user'
+      end
+    end
+
+    context 'with invalid params' do
+      it 'return a hash of errors' do
+        post "/v1/users", {user: {nickname: 'a'}}, {'current_user' => admin}
         last_response.status.should eq 412
         JSON.parse(last_response.body).keys.should include 'nickname'
       end
