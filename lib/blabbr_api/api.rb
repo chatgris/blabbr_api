@@ -13,6 +13,10 @@ class BlabbrApi::Api < Grape::API
     get do
       BlabbrCore::UsersCollection.new(current_user).all.to_a
     end
+
+    get ':limace' do
+      BlabbrCore::User.new(current_user, params[:limace]).find
+    end
   end
 
   resource :topics do
